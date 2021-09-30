@@ -7,6 +7,9 @@ import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import os
+from dotenv import load_dotenv
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -26,7 +29,7 @@ def extract_news_selenium(url):
     """
     print("Lets see what we got...")
     cnt = ''
-    cnt += ('<b> Hacker News Top Stories </b> \n' +
+    cnt += ('Hacker News Top Stories \n' +
             '<br>' + '-' * 50 + '<br>\n')
     driver.get(url)
     for i, tag in enumerate(driver.find_elements_by_class_name('storylink')):
@@ -36,7 +39,7 @@ def extract_news_selenium(url):
 
 
 CNT = extract_news_selenium('https://news.ycombinator.com/')
-
+print(CNT)
 CONTENT += CNT
 
 CONTENT += ('<br>------<br>')
@@ -44,11 +47,12 @@ CONTENT += ('End of message')
 
 print('Composing Email...')
 
+load_dotenv()
 SERVER = 'smtp.gmail.com'
 PORT = 587
-FROM = '<your_from_@email.com>'
-TO = '<your_to_@email.com>'
-PASS = '<app password goes here>'
+FROM = os.getenv('FROM')
+TO = os.getenv('TO')
+PASS = os.getenv('PASS')
 
 msg = MIMEMultipart()
 

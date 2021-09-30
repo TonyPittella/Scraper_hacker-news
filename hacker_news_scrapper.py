@@ -5,14 +5,16 @@ import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import os
+
 import requests
 
 from bs4 import BeautifulSoup
 
+from dotenv import load_dotenv
 
 now = datetime.datetime.now()
 CONTENT = " "
-
 
 def extract_news(url):
     """
@@ -25,48 +27,43 @@ def extract_news(url):
     response = requests.get(url)
     content = response.content
     soup = BeautifulSoup(content, 'html.parser')
-    # attr = {'class': 'title', 'valign':' ' })):# 'a': 'storylink'
     for i, tag in enumerate(soup.find_all('td', {'class': 'title', 'valign': ''})):
         cnt += ((str(i+1) + ' :: ' + tag.text + "\n" + '<br>')
                 if tag.text != 'More' else '')
     return cnt
 
-
-CNT = extract_news('https://news.ycombinator.com/')
-print(CNT)
+URL = 'https://news.ycombinator.com/'
+CNT = extract_news(URL)
 CONTENT += CNT
 
 CONTENT += ('<br>------<br>')
 CONTENT += ('<br><br> End of message')
 
 print('Composing Email...')
-
-# email credentials
+load_dotenv()
 SERVER = 'smtp.gmail.com'
 PORT = 587
-FROM = '<Email-you-send-from>@whatever.com'
-TO = '<Email=you-send-to>@whatever.com'
-# if using gmail set up 2 factor / app password and use that
-PASS = 'password for from email'
+FROM = os.getenv('FROM')
+TO = os.getenv('TO')
+PASS = os.getenv('PASS')
 
-msg = MIMEMultipart()
-
-msg["Subject"] = 'Top News Stories HN [Automated email]' + '' + \
-    str(now.day) + '-' + str(now.month) + '-' + str(now.year)
-msg['From'] = FROM
-msg['To'] = TO
-msg.attach(MIMEText(CONTENT, 'html'))
-
-print('Initiating Server ..')
-
-server = smtplib.SMTP(SERVER, PORT)
-#server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-server.set_debuglevel(1)
-server.ehlo()
-server.starttls()
-server.login(FROM, PASS)
-server.sendmail(FROM, TO, msg.as_string())
-
-print("Email sent")
-
-server.quit()
+def send_email():
+    """
+    compiles message format and sends it
+    """
+    msg = MIMEMultipart()
+    msg["Subject"] = 'Top News Stories HN [Automated email]' + '' + \
+        str(now.day) + '-' + str(now.month) + '-' + str(now.year)
+    msg['From'] = FROM
+    msg['To'] = TO
+    msg.attach(MIMEText(CONTENT, 'html'))
+    print('Initiating Server ..')
+    server = smtplib.SMTP(SERVER, PORT)
+    server.set_debuglevel(1)
+    server.ehlo()
+    server.starttls()
+    server.login(FROM, PASS)
+    server.sendmail(FROM, TO, msg.as_string())
+    print('*-' * 10 + "Email sent"+ '*-' * 10  )
+    server.quit()
+send_email()
