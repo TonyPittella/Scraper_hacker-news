@@ -3,6 +3,12 @@ import os
 import pytest
 from hacker_news_scrapper import * 
 
+SERVER = os.getenv('SERVER')
+PORT = os.getenv('PORT')
+FROM = os.getenv('FROM')
+PASS = os.getenv('PASS')
+
+
 @pytest.fixture
 def page_url():
     req = requests.get(URL)
@@ -12,11 +18,6 @@ def page_url():
 def page_html(page_url):
     soup = BeautifulSoup(page_url.content, "html.parser")
     return soup
-
-SERVER = os.getenv('SERVER')
-PORT = os.getenv('PORT')
-FROM = os.getenv('FROM')
-PASS = os.getenv('PASS')
 
 @pytest.fixture
 def email_server_ping():
