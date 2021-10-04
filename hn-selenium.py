@@ -21,6 +21,14 @@ time.sleep(5)
 
 now = datetime.datetime.now()
 CONTENT = " "
+URL = 'https://news.ycombinator.com/'
+
+load_dotenv()
+SERVER = 'smtp.gmail.com'
+PORT = 587
+FROM = os.getenv('FROM')
+TO = os.getenv('TO')
+PASS = os.getenv('PASS')
 
 
 def extract_news_selenium(url):
@@ -38,8 +46,8 @@ def extract_news_selenium(url):
     return cnt
 
 
-CNT = extract_news_selenium('https://news.ycombinator.com/')
-print(CNT)
+CNT = extract_news_selenium(URL)
+
 CONTENT += CNT
 
 CONTENT += ('<br>------<br>')
@@ -47,32 +55,25 @@ CONTENT += ('End of message')
 
 print('Composing Email...')
 
-load_dotenv()
-SERVER = 'smtp.gmail.com'
-PORT = 587
-FROM = os.getenv('FROM')
-TO = os.getenv('TO')
-PASS = os.getenv('PASS')
-
-msg = MIMEMultipart()
-
-msg["Subject"] = 'Top News Stories HN [Automated email]' + '' + \
-    str(now.day) + '-' + str(now.month) + '-' + str(now.year)
-msg['From'] = FROM
-msg['To'] = TO
-msg.attach(MIMEText(CONTENT, 'html'))
-
-print('Initiating Server ..')
-
-server = smtplib.SMTP(SERVER, PORT)
-server.set_debuglevel(1)
-server.ehlo()
-server.starttls()
-server.login(FROM, PASS)
-server.sendmail(FROM, TO, msg.as_string())
-
-print("Email sent")
-
-server.quit()
+def send_email():
+    """
+    compiles message format and sends it
+    """
+    msg = MIMEMultipart()
+    msg["Subject"] = 'Top News Stories HN [Automated email]' + '' + \
+        str(now.day) + '-' + str(now.month) + '-' + str(now.year)
+    msg['From'] = FROM
+    msg['To'] = TO
+    msg.attach(MIMEText(CONTENT, 'html'))
+    print('Initiating Server ..')
+    server = smtplib.SMTP(SERVER, PORT)
+    server.set_debuglevel(1)
+    server.ehlo()
+    server.starttls()
+    server.login(FROM, PASS)
+    server.sendmail(FROM, TO, msg.as_string())
+    print('*-' * 10 + "Email sent"+ '*-' * 10  )
+    server.quit()
+send_email()
 
 driver.quit()
