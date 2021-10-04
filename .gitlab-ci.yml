@@ -1,0 +1,30 @@
+image: python:3.9
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
+  - apt-get install -y python3-dev
+  - gem install dpl
+
+stages:
+  - lint
+  - test
+  - deploy
+
+linting:
+  stage: lint
+  script:
+    - pip install -r requirements.txt
+    - pylint *.py 
+  allow_failure: true
+
+testing:
+  stage: test
+  script:
+    - pip install -r requirements.txt
+    - pytest
+  allow_failure: true
+
+
+
+   
