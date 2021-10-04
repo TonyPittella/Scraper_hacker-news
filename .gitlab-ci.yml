@@ -15,14 +15,14 @@ linting:
   script:
     - pip install -r requirements.txt
     - pylint *.py 
-  allow_fail: true
+  allow_failure: true
 
 testing:
   stage: test
   script:
     - pip install -r requirements.txt
     - pytest
-  allow_fail: true
+  allow_failure: true
 
 
 
