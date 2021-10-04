@@ -29,6 +29,7 @@ PASS = os.getenv('PASS')
 
 DATE_VARIES = str(now.day) + '-' + str(now.month) + '-' + str(now.year)
 
+
 def extract_news(url):
     """
     Grabs the the first 30 new stories from Hacker News
@@ -44,9 +45,11 @@ def extract_news(url):
         cnt += ((str(i+1) + ' :: ' + tag.text + "\n" + '<br>')
                 if tag.text != 'More' else '')
     return cnt
-CNT = extract_news(URL)
-#print(CNT)
 
+
+CNT = extract_news(URL)
+# print(CNT)
+print(CNT)
 CONTENT += CNT
 # CONTENT += ('<br>------<br>')
 # CONTENT += ('<br><br> End of message')
