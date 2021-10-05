@@ -2,10 +2,7 @@ image: python:3.9
 
 before_script:
   - apt-get update -qy
-<<<<<<< HEAD
   - apt-get install -y ruby-dev
-=======
->>>>>>> 2c782bfc1737c0e09c55bb667bea4dd631e74c3c
   - apt-get install -y python3-dev
   - gem install dpl
 

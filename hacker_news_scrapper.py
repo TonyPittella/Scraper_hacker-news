@@ -11,7 +11,7 @@ from email.mime.text import MIMEText
 import os
 
 import requests
-
+from pprint import pprint as pp
 from bs4 import BeautifulSoup
 
 from dotenv import load_dotenv
@@ -45,12 +45,12 @@ def extract_news(url):
         cnt += ((str(i+1) + ' :: ' + tag.text + "\n" + '<br>')
                 if tag.text != 'More' else '')
     return cnt
-
+#GET TAG???
 
 CNT = extract_news(URL)
-# print(CNT)
-print(CNT)
-CONTENT += CNT
+
+#print(CNT)
+# CONTENT += CNT
 # CONTENT += ('<br>------<br>')
 # CONTENT += ('<br><br> End of message')
 
@@ -103,24 +103,24 @@ CONTENT += CNT
 #     return conn
 # create_to_db()
 
-# def string_break_down(CNT):
-#     banner1 = CNT.replace('<br>', '').replace(' :: ', ", ").replace('(', ", ").replace(')', " ")
-#     #banner2 is a list of strings now don't forget
-#     banner2 = banner1.split("\n")
-#     entries= []
-#     print("stop, drop...")
-#     for segment in banner2[2:32]:
-#         banner3 = segment.split(',')
-#         index_num =banner3[0]
-#         head_line = banner3[1]
-#         source_site = banner3[2]
-#         #print(index_num, head_line, source_site)
-#         entries.append((index_num, head_line, source_site))
-#     print("shut'em down...")
-#     return entries
+def string_break_down(CNT):
+    banner1 = CNT.replace('<br>', '').replace(' :: ', ",").replace('(', ",").replace(')', "")
+    #banner2 is a list of strings now don't forget
+    banner2 = banner1.split("\n")
+    entries= []
+    print("stop, drop...")
+    for segment in banner2[2:32]:
+        banner3 = segment.split(',')
+        index_num =banner3[0]
+        head_line = banner3[1]
+        source_site = banner3[-1] if len(banner3) == 3 else "No url"
+        #print(index_num, head_line, source_site)
+        entries.append((index_num, head_line, source_site))
+    print("shut'em down...")
+    return entries
 
-# broken_strings = string_break_down(CNT)
-# #print(broken_strings)
+broken_strings = string_break_down(CNT)
+# pp(broken_strings)
 # def add_to_db(broken_strings):
 #     """
 #     populates sqlite table with scraper output
@@ -131,3 +131,4 @@ CONTENT += CNT
 #     cur.executemany("INSERT INTO hacker_news VALUES(?,?,?)", broken_strings)
 #     conn.commit()
 # add_to_db(broken_strings)
+# print('Oh, no, thats how Ruff Ryders roll')

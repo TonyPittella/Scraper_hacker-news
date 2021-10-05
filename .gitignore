@@ -3,3 +3,6 @@ venv/*
 .env
 __pycache__/
 .vscode/
+Test/__pycache__/
+dontADD.py
+Hacker_News_Scrapes.csv
